@@ -1,0 +1,750 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кинетическая энергия | Physics Cyberpunk</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Exo+2:wght@300;400;500;600;700;800&display=swap');
+
+:root{
+ --cyan:#00f5ff;
+ --pink:#ff287f;
+ --purple:#a855f7;
+ --bg:#050713;
+ --white:#eafaff;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+ background:var(--bg);
+ color:var(--white);
+ font-family:'Exo 2',sans-serif;
+ overflow:hidden;
+}
+
+body:before{
+ content:"";
+ position:fixed;
+ inset:0;
+ pointer-events:none;
+ z-index:10;
+ opacity:.12;
+ background:repeating-linear-gradient(
+ transparent 0px,
+ transparent 3px,
+ #00eaff 4px
+ );
+}
+
+body:after{
+ content:"";
+ position:fixed;
+ inset:0;
+ pointer-events:none;
+ background:
+ radial-gradient(circle at 15% 20%,#092b4a55,transparent 40%),
+ radial-gradient(circle at 85% 80%,#6b145455,transparent 40%);
+}
+
+.grid{
+ position:fixed;
+ inset:0;
+ background-image:
+ linear-gradient(#00f5ff12 1px,transparent 1px),
+ linear-gradient(90deg,#00f5ff12 1px,transparent 1px);
+ background-size:45px 45px;
+ transform:perspective(500px) rotateX(55deg) scale(1.8);
+ transform-origin:center bottom;
+ opacity:.35;
+ pointer-events:none;
+ animation:gridmove 15s linear infinite;
+}
+
+@keyframes gridmove{
+ from{background-position:0 0}
+ to{background-position:0 90px}
+}
+
+.particles{
+ position:fixed;
+ inset:0;
+ pointer-events:none;
+ overflow:hidden;
+}
+
+.particle{
+ position:absolute;
+ width:3px;height:3px;
+ border-radius:50%;
+ background:var(--cyan);
+ box-shadow:0 0 12px var(--cyan);
+ animation:float 8s linear infinite;
+}
+
+@keyframes float{
+ 0%{transform:translateY(100vh);opacity:0}
+ 20%{opacity:1}
+ 80%{opacity:1}
+ 100%{transform:translateY(-10vh);opacity:0}
+}
+
+header{
+ position:fixed;
+ z-index:20;
+ top:0;left:0;width:100%;
+ padding:18px 4%;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ border-bottom:1px solid #00f5ff33;
+ background:#050713c9;
+ backdrop-filter:blur(15px);
+}
+
+.logo{
+ font-family:Orbitron;
+ color:var(--cyan);
+ font-size:13px;
+ letter-spacing:3px;
+ text-shadow:0 0 15px var(--cyan);
+}
+
+.counter{
+ font-family:Orbitron;
+ color:var(--pink);
+ font-size:13px;
+}
+
+.progress{
+ position:fixed;
+ top:59px;left:0;
+ height:3px;
+ width:0%;
+ background:linear-gradient(90deg,var(--cyan),var(--pink));
+ box-shadow:0 0 15px var(--cyan);
+ z-index:30;
+ transition:.5s;
+}
+
+.deck{
+ position:relative;
+ width:100%;
+ height:100vh;
+ z-index:2;
+}
+
+.slide{
+ position:absolute;
+ inset:0;
+ padding:95px 9% 85px;
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
+ opacity:0;
+ visibility:hidden;
+ transform:translateX(70px) scale(.97);
+ transition:opacity .65s,transform .65s,visibility .65s;
+ overflow-y:auto;
+}
+
+.slide.active{
+ opacity:1;
+ visibility:visible;
+ transform:translateX(0) scale(1);
+}
+
+.tag{
+ color:var(--pink);
+ font-family:Orbitron;
+ font-size:11px;
+ letter-spacing:4px;
+ margin-bottom:20px;
+}
+
+h1,h2{
+ font-family:Orbitron;
+ text-transform:uppercase;
+ line-height:1.3;
+}
+
+h1{
+ font-size:clamp(30px,6vw,75px);
+ color:white;
+ text-shadow:0 0 25px #00f5ff88;
+}
+
+h2{
+ font-size:clamp(25px,4vw,43px);
+ margin-bottom:25px;
+}
+
+h2 span,.cyan{color:var(--cyan)}
+.pink{color:var(--pink)}
+
+p{
+ font-size:clamp(16px,2vw,21px);
+ line-height:1.7;
+ color:#c2d7e5;
+ max-width:850px;
+}
+
+.neon-line{
+ height:2px;
+ width:120px;
+ background:var(--cyan);
+ box-shadow:0 0 20px var(--cyan);
+ margin:25px 0;
+}
+
+.gridcards{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:18px;
+ margin-top:25px;
+}
+
+.card{
+ border:1px solid #00f5ff44;
+ background:linear-gradient(135deg,#0c1b2aee,#0b0b1cee);
+ padding:23px;
+ border-radius:12px;
+ position:relative;
+ transition:.3s;
+ animation:cardin .7s both;
+}
+
+.card:hover{
+ transform:translateY(-7px);
+ border-color:var(--cyan);
+ box-shadow:0 0 25px #00f5ff22;
+}
+
+.card h3{
+ font-family:Orbitron;
+ color:var(--cyan);
+ font-size:16px;
+ margin-bottom:12px;
+}
+
+.card p{font-size:16px}
+
+@keyframes cardin{
+ from{opacity:0;transform:translateY(30px)}
+ to{opacity:1;transform:translateY(0)}
+}
+
+.formula{
+ font-family:Orbitron;
+ font-size:clamp(36px,7vw,75px);
+ color:var(--cyan);
+ text-shadow:0 0 30px #00f5ff99;
+ margin:25px 0;
+ text-align:center;
+}
+
+.formula-box{
+ border:1px solid var(--cyan);
+ padding:30px;
+ border-radius:15px;
+ background:#00f5ff0a;
+ box-shadow:0 0 35px #00f5ff16,inset 0 0 25px #00f5ff0a;
+ max-width:700px;
+ margin:25px auto;
+}
+
+.center{text-align:center;align-items:center}
+
+.big-number{
+ font-family:Orbitron;
+ color:var(--pink);
+ font-size:clamp(35px,6vw,65px);
+ text-shadow:0 0 20px var(--pink);
+}
+
+.visual{
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ min-height:180px;
+ gap:30px;
+ margin:25px 0;
+}
+
+.ball{
+ width:85px;height:85px;
+ border-radius:50%;
+ background:radial-gradient(circle at 30% 25%,white,var(--cyan) 25%,#075b92 75%);
+ box-shadow:0 0 35px var(--cyan);
+ animation:bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce{
+ 0%,100%{transform:translateY(0)}
+ 50%{transform:translateY(-25px)}
+}
+
+.car{
+ font-size:75px;
+ filter:drop-shadow(0 0 12px var(--cyan));
+ animation:drive 3s ease-in-out infinite;
+}
+
+@keyframes drive{
+ 0%,100%{transform:translateX(-30px)}
+ 50%{transform:translateX(30px)}
+}
+
+.arrow{
+ color:var(--pink);
+ font-size:45px;
+ animation:pulse 1.2s infinite;
+}
+
+@keyframes pulse{
+ 50%{opacity:.3;transform:scale(.85)}
+}
+
+.energy-bar{
+ width:100%;
+ height:12px;
+ background:#182536;
+ border-radius:20px;
+ overflow:hidden;
+ margin-top:15px;
+}
+
+.energy-fill{
+ height:100%;
+ background:linear-gradient(90deg,var(--cyan),var(--pink));
+ box-shadow:0 0 15px var(--cyan);
+ animation:fill 2s ease both;
+}
+
+@keyframes fill{
+ from{width:0}
+}
+
+.nav{
+ position:fixed;
+ bottom:20px;
+ right:5%;
+ z-index:50;
+ display:flex;
+ gap:12px;
+ align-items:center;
+}
+
+button{
+ border:1px solid var(--cyan);
+ background:#071421;
+ color:var(--cyan);
+ padding:12px 22px;
+ font-family:Orbitron;
+ cursor:pointer;
+ transition:.3s;
+ border-radius:5px;
+}
+
+button:hover{
+ background:var(--cyan);
+ color:#050713;
+ box-shadow:0 0 25px var(--cyan);
+}
+
+.hint{
+ position:fixed;
+ bottom:27px;
+ left:5%;
+ color:#718b9f;
+ font-size:12px;
+ z-index:20;
+}
+
+footer{
+ position:fixed;
+ bottom:0;
+ left:0;
+ width:100%;
+ height:3px;
+ background:#102435;
+ z-index:15;
+}
+
+footer div{
+ width:0%;
+ height:100%;
+ background:var(--pink);
+ transition:.5s;
+}
+
+ul{padding-left:25px;margin-top:15px}
+li{
+ margin:12px 0;
+ color:#c6d9e6;
+ font-size:18px;
+}
+
+.glow{
+ animation:glow 2s infinite alternate;
+}
+
+@keyframes glow{
+ from{text-shadow:0 0 8px var(--cyan)}
+ to{text-shadow:0 0 28px var(--cyan),0 0 50px var(--pink)}
+}
+
+@media(max-width:650px){
+ .slide{padding:85px 6% 90px}
+ .gridcards{grid-template-columns:1fr;gap:10px}
+ .card{padding:15px}
+ .card p{font-size:14px}
+ .nav{right:4%;bottom:12px}
+ button{padding:10px 13px;font-size:10px}
+ .hint{display:none}
+ header{padding:15px 5%}
+ .visual{min-height:120px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="grid"></div>
+<div class="particles" id="particles"></div>
+
+<header>
+ <div class="logo">⚡ PHYSICS // CYBER LAB</div>
+ <div class="counter" id="counter">01 / 12</div>
+</header>
+
+<div class="progress" id="progress"></div>
+<footer><div id="bottomProgress"></div></footer>
+
+<main class="deck">
+
+<!-- 1 -->
+<section class="slide active center">
+ <div class="tag">PHYSICS PRESENTATION // 001</div>
+ <h1 class="glow">КИНЕТИЧЕСКАЯ<br><span class="cyan">ЭНЕРГИЯ</span></h1>
+ <div class="neon-line"></div>
+ <p>Энергия движения. Её роль в природе, технике и жизни человека.</p>
+ <div class="visual">
+  <div class="ball"></div>
+  <div class="arrow">➜</div>
+  <div class="ball" style="width:55px;height:55px"></div>
+ </div>
+ <div class="tag">SCIENCE • ENERGY • MOTION</div>
+</section>
+
+<!-- 2 -->
+<section class="slide">
+ <div class="tag">01 // DEFINITION</div>
+ <h2>Что такое <span>кинетическая энергия?</span></h2>
+ <p>Кинетическая энергия — это физическая величина, которая характеризует энергию тела, связанную с его движением.</p>
+ <div class="gridcards">
+  <div class="card">
+   <h3>01. ДВИЖЕНИЕ</h3>
+   <p>Любое движущееся тело обладает кинетической энергией.</p>
+  </div>
+  <div class="card">
+   <h3>02. ЗАВИСИМОСТЬ</h3>
+   <p>Энергия зависит от массы тела и его скорости.</p>
+  </div>
+  <div class="card">
+   <h3>03. ИЗМЕНЕНИЕ</h3>
+   <p>Чем быстрее движется тело, тем больше его кинетическая энергия.</p>
+  </div>
+  <div class="card">
+   <h3>04. ИЗМЕРЕНИЕ</h3>
+   <p>В системе СИ энергия измеряется в джоулях (Дж).</p>
+  </div>
+ </div>
+</section>
+
+<!-- 3 -->
+<section class="slide">
+ <div class="tag">02 // MAIN FACTORS</div>
+ <h2>От чего зависит <span>энергия?</span></h2>
+ <p>Кинетическая энергия зависит от двух главных физических характеристик тела.</p>
+ <div class="gridcards">
+  <div class="card">
+   <div class="big-number">01</div>
+   <h3>МАССА (m)</h3>
+   <p>Чем больше масса тела при одинаковой скорости, тем больше его кинетическая энергия.</p>
+  </div>
+  <div class="card">
+   <div class="big-number">02</div>
+   <h3>СКОРОСТЬ (v)</h3>
+   <p>При увеличении скорости кинетическая энергия возрастает пропорционально квадрату скорости.</p>
+  </div>
+ </div>
+ <div class="visual">
+  <div class="ball"></div>
+  <div class="arrow">+</div>
+  <div class="car">🚗</div>
+ </div>
+</section>
+
+<!-- 4 -->
+<section class="slide center">
+ <div class="tag">03 // FORMULA</div>
+ <h2>Главная <span>формула</span></h2>
+ <div class="formula-box">
+  <div class="formula">E = mv² / 2</div>
+  <p>Это формула для расчёта кинетической энергии тела, движущегося поступательно.</p>
+ </div>
+ <div class="gridcards">
+  <div class="card"><h3>E</h3><p>Кинетическая энергия (Дж).</p></div>
+  <div class="card"><h3>m</h3><p>Масса тела (кг).</p></div>
+  <div class="card"><h3>v</h3><p>Скорость тела (м/с).</p></div>
+  <div class="card"><h3>2</h3><p>Постоянный коэффициент в формуле.</p></div>
+ </div>
+</section>
+
+<!-- 5 -->
+<section class="slide">
+ <div class="tag">04 // MASS</div>
+ <h2>Как влияет <span>масса?</span></h2>
+ <p>Представим два тела, которые движутся с одинаковой скоростью, но имеют разную массу.</p>
+ <div class="gridcards">
+  <div class="card">
+   <h3>ТЕЛО A</h3>
+   <div class="visual"><div class="ball" style="width:40px;height:40px"></div></div>
+   <p>Масса: 2 кг</p>
+   <p>Скорость: 5 м/с</p>
+   <div class="big-number">25 Дж</div>
+  </div>
+  <div class="card">
+   <h3>ТЕЛО B</h3>
+   <div class="visual"><div class="ball" style="width:85px;height:85px"></div></div>
+   <p>Масса: 4 кг</p>
+   <p>Скорость: 5 м/с</p>
+   <div class="big-number">50 Дж</div>
+  </div>
+ </div>
+ <p style="margin-top:20px">Вывод: при одинаковой скорости увеличение массы в 2 раза увеличивает кинетическую энергию тоже в 2 раза.</p>
+</section>
+
+<!-- 6 -->
+<section class="slide">
+ <div class="tag">05 // VELOCITY</div>
+ <h2>Как влияет <span>скорость?</span></h2>
+ <p>Скорость особенно сильно влияет на кинетическую энергию, потому что в формуле она возводится в квадрат.</p>
+ <div class="gridcards">
+  <div class="card">
+   <h3>СКОРОСТЬ 2 М/С</h3>
+   <div class="big-number">4 Дж</div>
+   <div class="energy-bar"><div class="energy-fill" style="width:10%"></div></div>
+  </div>
+  <div class="card">
+   <h3>СКОРОСТЬ 4 М/С</h3>
+   <div class="big-number">16 Дж</div>
+   <div class="energy-bar"><div class="energy-fill" style="width:40%"></div></div>
+  </div>
+ </div>
+ <div class="formula-box">
+  <p class="center">Если скорость увеличить в 2 раза, кинетическая энергия увеличится в <span class="pink">4 раза!</span></p>
+ </div>
+</section>
+
+<!-- 7 -->
+<section class="slide">
+ <div class="tag">06 // REAL LIFE</div>
+ <h2>Кинетическая энергия <span>в жизни</span></h2>
+ <p>Мы постоянно встречаем кинетическую энергию вокруг себя.</p>
+ <div class="gridcards">
+  <div class="card">
+   <h3>🚗 АВТОМОБИЛЬ</h3>
+   <p>Движущийся автомобиль обладает энергией движения.</p>
+  </div>
+  <div class="card">
+   <h3>⚽ МЯЧ</h3>
+   <p>Летящий после удара мяч обладает кинетической энергией.</p>
+  </div>
+  <div class="card">
+   <h3>🚴 ВЕЛОСИПЕД</h3>
+   <p>Движение велосипедиста связано с кинетической энергией.</p>
+  </div>
+  <div class="card">
+   <h3>💧 ВОДА</h3>
+   <p>Быстро текущая вода может вращать турбины электростанций.</p>
+  </div>
+ </div>
+</section>
+
+<!-- 8 -->
+<section class="slide">
+ <div class="tag">07 // AUTOMOBILES</div>
+ <h2>Энергия <span>автомобиля</span></h2>
+ <div class="visual">
+  <div class="car">🏎️</div>
+  <div class="arrow">➜</div>
+  <div class="big-number">120</div>
+ </div>
+ <p>Движущийся автомобиль обладает кинетической энергией. Чем тяжелее автомобиль и чем выше его скорость, тем больше эта энергия.</p>
+ <div class="formula-box">
+  <p class="center">Например, автомобиль массой 1000 кг движется со скоростью 20 м/с.</p>
+  <div class="formula">200 000 Дж</div>
+  <p class="center">Его кинетическая энергия равна 200 кДж.</p>
+ </div>
+</section>
+
+<!-- 9 -->
+<section class="slide">
+ <div class="tag">08 // HUMAN BODY</div>
+ <h2>Кинетическая энергия <span>человека</span></h2>
+ <p>Когда человек бежит, прыгает, катается на велосипеде или занимается спортом, его тело обладает кинетической энергией.</p>
+ <div class="gridcards">
+  <div class="card">
+   <h3>БЕГ</h3>
+   <div class="visual"><span style="font-size:65px">🏃</span></div>
+   <p>Человек движется и обладает энергией движения.</p>
+  </div>
+  <div class="card">
+   <h3>ПРЫЖОК</h3>
+   <div class="visual"><span style="font-size:65px;animation:bounce 1s infinite">🧍</span></div>
+   <p>Во время движения вверх и вниз энергия тела изменяется.</p>
+  </div>
+ </div>
+</section>
+
+<!-- 10 -->
+<section class="slide">
+ <div class="tag">09 // PHYSICS TASK</div>
+ <h2>Решаем <span>задачу</span></h2>
+ <div class="card">
+  <h3>УСЛОВИЕ</h3>
+  <p>Тело массой 4 кг движется со скоростью 3 м/с. Найдите его кинетическую энергию.</p>
+ </div>
+ <div class="gridcards">
+  <div class="card">
+   <h3>ДАНО</h3>
+   <p>m = 4 кг</p>
+   <p>v = 3 м/с</p>
+  </div>
+  <div class="card">
+   <h3>РЕШЕНИЕ</h3>
+   <p>E = mv² / 2</p>
+   <p>E = 4 × 3² / 2</p>
+   <p>E = 36 / 2</p>
+  </div>
+ </div>
+ <div class="formula-box center">
+  <p>ОТВЕТ:</p>
+  <div class="formula">18 Дж</div>
+ </div>
+</section>
+
+<!-- 11 -->
+<section class="slide">
+ <div class="tag">10 // TECHNOLOGY</div>
+ <h2>Где применяется <span>кинетическая энергия?</span></h2>
+ <p>Принцип кинетической энергии используется во многих современных технологиях.</p>
+ <div class="gridcards">
+  <div class="card">
+   <h3>⚡ ГИДРОЭЛЕКТРОСТАНЦИИ</h3>
+   <p>Движущаяся вода вращает турбины, помогая вырабатывать электричество.</p>
+  </div>
+  <div class="card">
+   <h3>🚀 ТРАНСПОРТ</h3>
+   <p>При движении поездов, самолётов и автомобилей возникает кинетическая энергия.</p>
+  </div>
+  <div class="card">
+   <h3>🏭 ПРОИЗВОДСТВО</h3>
+   <p>Движущиеся механизмы и детали машин обладают кинетической энергией.</p>
+  </div>
+  <div class="card">
+   <h3>🔋 ЭНЕРГОСИСТЕМЫ</h3>
+   <p>Маховики могут накапливать энергию в виде вращательного движения.</p>
+  </div>
+ </div>
+</section>
+
+<!-- 12 -->
+<section class="slide center">
+ <div class="tag">11 // FINAL SYSTEM</div>
+ <h1 class="glow">ИТОГИ <span class="cyan">И ВЫВОДЫ</span></h1>
+ <div class="neon-line"></div>
+ <p>Кинетическая энергия — важная часть физики, которая объясняет движение тел и помогает понять многие процессы в окружающем мире.</p>
+ <div class="formula-box">
+  <div class="formula">E = mv² / 2</div>
+  <p>Масса и скорость определяют кинетическую энергию движущегося тела.</p>
+ </div>
+ <div class="tag">THANK YOU FOR YOUR ATTENTION</div>
+ <h2 class="pink">СПАСИБО ЗА ВНИМАНИЕ!</h2>
+</section>
+
+</main>
+
+<div class="hint">← → ИЛИ ПРОБЕЛ — ПЕРЕКЛЮЧЕНИЕ СЛАЙДОВ</div>
+
+<div class="nav">
+ <button onclick="prev()">← BACK</button>
+ <button onclick="next()">NEXT →</button>
+</div>
+
+<script>
+let current=0;
+const slides=document.querySelectorAll('.slide');
+const total=slides.length;
+
+function showSlide(n){
+ slides[current].classList.remove('active');
+ current=(n+total)%total;
+ slides[current].classList.add('active');
+
+ document.getElementById('counter').textContent=
+ String(current+1).padStart(2,'0')+' / '+total;
+
+ let percent=((current+1)/total)*100;
+ document.getElementById('progress').style.width=percent+'%';
+ document.getElementById('bottomProgress').style.width=percent+'%';
+}
+
+function next(){showSlide(current+1)}
+function prev(){showSlide(current-1)}
+
+document.addEventListener('keydown',e=>{
+ if(e.key==='ArrowRight'||e.key===' '||e.key==='ArrowDown'){
+  e.preventDefault();next();
+ }
+ if(e.key==='ArrowLeft'||e.key==='ArrowUp'){
+  prev();
+ }
+ if(e.key==='Home')showSlide(0);
+ if(e.key==='End')showSlide(total-1);
+});
+
+// Touch support
+let touchStart=0;
+document.addEventListener('touchstart',e=>{
+ touchStart=e.changedTouches[0].screenX;
+});
+document.addEventListener('touchend',e=>{
+ let difference=e.changedTouches[0].screenX-touchStart;
+ if(Math.abs(difference)>60){
+  difference<0?next():prev();
+ }
+});
+
+// Floating particles
+const container=document.getElementById('particles');
+for(let i=0;i<45;i++){
+ const p=document.createElement('div');
+ p.className='particle';
+ p.style.left=Math.random()*100+'%';
+ p.style.animationDelay=Math.random()*8+'s';
+ p.style.animationDuration=(5+Math.random()*8)+'s';
+ container.appendChild(p);
+}
+
+// Initial state
+showSlide(0);
+</script>
+
+</body>
+</html>
